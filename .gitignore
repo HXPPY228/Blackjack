@@ -1,0 +1,39 @@
+###########################################
+# Visual Studio (VS) Files to Ignore
+###########################################
+
+# VS temporary files
+*.vspscc
+*.vssscc
+*.suo
+*.user
+*.bak
+*.ncb
+*.pdb
+*.opensdf
+*.sdf
+*.tlog
+
+
+# Visual Studio Cache, Temp, and Other
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+*.log
+*.vsix
+*.intellisense.cache
+*.dsym
+
+# ** ЭТОТ ПУНКТ ГЛАВНЫЙ! ** Игнорируем папку кэша VS
+.vs/
+
+# NuGet packages
+packages/
+
+# Rider files (if used)
+.idea/
+
+# DotNet Core files
+**/*.csproj.user
+**/*.nupkg

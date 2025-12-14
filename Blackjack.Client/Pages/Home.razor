@@ -1,0 +1,52 @@
+﻿@page "/"
+@using Blackjack.Shared
+
+<PageTitle>Тест Связки Проектов</PageTitle>
+
+<h1>Проверка связи Shared и Client</h1>
+
+<p>Если ты видишь список карт ниже, значит, твой клиентский проект видит типы, которые ты создал в Shared!</p>
+
+@if (TestDeck.Any())
+{
+    <h2>Тестовая рука игрока (из Shared моделей)</h2>
+    <ul>
+        @foreach (var card in TestDeck)
+        {
+            <li>Карта: <strong>@card.Rank</strong> @GetSuitSymbol(card.Suit) (@card.Suit) - Очки: @card.Value</li>
+        }
+    </ul>
+    <p>Общее тестовое значение: <strong>@TotalValue</strong></p>
+}
+else
+{
+    <p>Колода пуста...</p>
+}
+
+
+@code {
+    // Список карт использует твой класс Card из Shared
+    private List<Card> TestDeck = new List<Card>();
+    private int TotalValue => TestDeck.Sum(c => c.Value); // Простой подсчет очков
+
+    protected override void OnInitialized()
+    {
+        // Создаем тестовую руку, используя твои Enum'ы Rank и Suit
+        TestDeck.Add(new Card { Rank = Rank.King, Suit = Suit.Hearts });
+        TestDeck.Add(new Card { Rank = Rank.Ace, Suit = Suit.Spades });
+        TestDeck.Add(new Card { Rank = Rank.Five, Suit = Suit.Diamonds });
+
+        // Если этот код скомпилируется и запустится,
+        // значит, Shared и Client работают вместе.
+    }
+
+    // Хелпер для красивого отображения мастей (Никитосик оценит)
+    private string GetSuitSymbol(Suit suit) => suit switch
+    {
+        Suit.Hearts => "♥",
+        Suit.Diamonds => "♦",
+        Suit.Clubs => "♣",
+        Suit.Spades => "♠",
+        _ => string.Empty
+    };
+}
