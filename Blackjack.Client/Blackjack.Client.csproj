@@ -16,4 +16,9 @@
     <ProjectReference Include="..\Blackjack.Shared\Blackjack.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Shared\Models\" />
+    <Folder Include="wwwroot\images\cards\" />
+  </ItemGroup>
+
 </Project>

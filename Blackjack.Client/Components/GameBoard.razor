@@ -1,0 +1,133 @@
+﻿@using Blackjack.Shared
+@using Blackjack.Client.Services
+
+<div class="game-board">
+    <!-- Зона дилера -->
+    <div class="dealer-section">
+        <h3>Дилер (Очки: @CalculateDealerScore())</h3>
+        <div class="cards-container">
+            @foreach (var card in _gameService?.DealerHand ?? new())
+            {
+                <CardComponent Card="card" />
+            }
+        </div>
+    </div>
+
+    <!-- Колода и кнопки -->
+    <div class="middle-section">
+        <div class="deck">
+            <div class="card-back">🂠</div>
+            <div class="deck-count">@(_gameService?.DeckCount ?? 0) осталось</div>
+        </div>
+
+        <div class="controls">
+            @if (_gameService?.IsMyTurn == true && _gameService?.GameState == GameResult.InProgress)
+            {
+                <button @onclick="Hit" class="btn btn-success">Взять карту</button>
+                <button @onclick="Stand" class="btn btn-warning">Хватит</button>
+                <button @onclick="Double" class="btn btn-info">Удвоить</button>
+            }
+            <button @onclick="NewGame" class="btn btn-primary">Новая игра</button>
+        </div>
+    </div>
+
+    <!-- Зона игрока -->
+    <div class="player-section">
+        <h3>@(_gameService?.PlayerName ?? "Игрок") (Очки: @CalculatePlayerScore())</h3>
+        <div class="cards-container">
+            @foreach (var card in _gameService?.PlayerHand ?? new())
+            {
+                <CardComponent Card="card" />
+            }
+        </div>
+        <div class="status">
+            @GetStatusMessage()
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public MockGameHubService? GameService { get; set; }
+
+    private MockGameHubService? _gameService;
+
+    protected override void OnParametersSet()
+    {
+        _gameService = GameService;
+    }
+
+    private async Task Hit()
+    {
+        if (_gameService != null)
+            await _gameService.HitAsync();
+        StateHasChanged();
+    }
+
+    private async Task Stand()
+    {
+        if (_gameService != null)
+            await _gameService.StandAsync();
+        StateHasChanged();
+    }
+
+    private async Task Double()
+    {
+        if (_gameService != null)
+            await _gameService.DoubleAsync();
+        StateHasChanged();
+    }
+
+    private async Task NewGame()
+    {
+        if (_gameService != null)
+            await _gameService.StartNewGameAsync();
+        StateHasChanged();
+    }
+
+    private int CalculatePlayerScore()
+    {
+        return CalculateScore(_gameService?.PlayerHand ?? new());
+    }
+
+    private int CalculateDealerScore()
+    {
+        return CalculateScore((_gameService?.DealerHand ?? new()).Where(c => !c.IsHidden).ToList());
+    }
+
+    private int CalculateScore(List<Card> hand)
+    {
+        int score = 0;
+        int aceCount = 0;
+
+        foreach (var card in hand)
+        {
+            if (card.IsHidden) continue;
+            if (card.Rank == Rank.Ace) aceCount++;
+            score += card.Value;
+        }
+
+        while (score > 21 && aceCount > 0)
+        {
+            score -= 10;
+            aceCount--;
+        }
+
+        return score;
+    }
+
+    private string GetStatusMessage()
+    {
+        if (_gameService == null) return "";
+
+        return _gameService.GameState switch
+        {
+            GameResult.PlayerWin => "🎉 Вы победили!",
+            GameResult.DealerWin => "💀 Дилер победил",
+            GameResult.Push => "🤝 Ничья!",
+            GameResult.PlayerBust => "💥 Перебор! Вы проиграли",
+            GameResult.InProgress => _gameService.IsMyTurn ? "Ваш ход..." : "Ход дилера...",
+            _ => ""
+        };
+    }
+}

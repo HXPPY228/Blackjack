@@ -1,0 +1,34 @@
+﻿@page "/test"
+@using Blackjack.Client.Components
+@using Blackjack.Client.Services
+@using Blackjack.Shared
+@implements IDisposable
+
+<PageTitle>Blackjack Test</PageTitle>
+
+<h1>🎮 Тестовый режим (Саня)</h1>
+<p>Это тестовая страница для проверки компонентов без сервера</p>
+
+@if (_gameService != null)
+{
+    <GameBoard />
+}
+else
+{
+    <p>Загрузка...</p>
+}
+
+@code {
+    private MockGameHubService? _gameService;
+
+    protected override void OnInitialized()
+    {
+        _gameService = new MockGameHubService();
+        _gameService.StartNewGameAsync();
+    }
+
+    public void Dispose()
+    {
+        _gameService = null;
+    }
+}
