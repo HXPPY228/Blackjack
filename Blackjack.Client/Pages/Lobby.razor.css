@@ -1,0 +1,137 @@
+﻿.lobby-container {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    min-height: 100%;
+    padding: 2rem;
+    margin: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.lobby-header {
+    flex-shrink: 0;
+    margin-bottom: 2rem;
+}
+
+.lobby-card {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    border-radius: 15px !important;
+    overflow: hidden;
+    height: 100%;
+}
+
+    .lobby-card .card-header {
+        background: rgba(0, 0, 0, 0.3) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+        color: white !important;
+        font-weight: bold;
+    }
+
+    .lobby-card .card-body {
+        background: transparent !important;
+        color: white !important;
+    }
+
+/* Комнаты */
+.room-item {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+    .room-item:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-color: rgba(255, 215, 0, 0.5) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+/* Формы */
+.form-control, .form-control-lg {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: white !important;
+}
+
+    .form-control:focus {
+        background: rgba(255, 255, 255, 0.15) !important;
+        border-color: #ffd700 !important;
+        box-shadow: 0 0 0 0.25rem rgba(255, 215, 0, 0.25) !important;
+        color: white !important;
+    }
+
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.5) !important;
+    }
+
+/* Кнопки */
+.btn-lg {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+    .btn-lg:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+.btn-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+    border: none !important;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+    border: none !important;
+}
+
+.btn-outline-light {
+    background: transparent !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    color: white !important;
+}
+
+    .btn-outline-light:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-color: white !important;
+        color: white !important;
+    }
+
+/* Правила игры */
+.rules-card {
+    background: rgba(0, 0, 0, 0.2) !important;
+    border: 1px solid rgba(255, 215, 0, 0.2) !important;
+    color: white !important;
+}
+
+/* Текст */
+.text-light {
+    color: white !important;
+}
+
+.text-warning {
+    color: #ffd700 !important;
+}
+
+.form-text {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.small {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .lobby-container {
+        padding: 1rem;
+    }
+}

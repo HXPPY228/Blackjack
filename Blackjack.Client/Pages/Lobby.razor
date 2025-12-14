@@ -1,0 +1,185 @@
+﻿@page "/"
+@page "/lobby"
+
+<div class="lobby-container">
+    <div class="lobby-header text-center mb-5">
+        <h1 class="display-4 text-warning">♠️♥️ Blackjack ♣️♦️</h1>
+        <p class="lead text-light">Присоединяйся к игре или создай свою комнату</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <!-- Левая часть: Вход в игру -->
+        <div class="col-md-5 mb-4">
+            <div class="card lobby-card">
+                <div class="card-header bg-dark text-light">
+                    <h5 class="mb-0">🎮 Начать игру</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="playerName" class="form-label text-light">Твой никнейм</label>
+                        <input type="text"
+                               class="form-control form-control-lg"
+                               id="playerName"
+                               placeholder="Введите имя"
+                               @bind="PlayerName"
+                               @onkeyup="HandleEnterKey" />
+                        <div class="form-text text-light">Макс. 15 символов</div>
+                    </div>
+
+                    <div class="d-grid gap-3 mt-4">
+                        <button class="btn btn-success btn-lg"
+                                @onclick="CreateNewGame"
+                                disabled="@(!CanJoin)">
+                            🎯 Создать новую игру
+                        </button>
+
+                        <div class="text-center text-light">или</div>
+
+                        <div class="input-group">
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="Введите ID комнаты"
+                                   @bind="RoomId" />
+                            <button class="btn btn-primary"
+                                    @onclick="JoinExistingGame"
+                                    disabled="@(!CanJoin)">
+                                Присоединиться
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Правая часть: Список активных игр -->
+        <div class="col-md-5 mb-4">
+            <div class="card lobby-card">
+                <div class="card-header bg-dark text-light">
+                    <h5 class="mb-0">🌐 Активные комнаты</h5>
+                </div>
+                <div class="card-body">
+                    @if (ActiveRooms.Count == 0)
+                    {
+                        <div class="text-center text-light py-4">
+                            <p>😴 Нет активных игр</p>
+                            <p class="small">Создайте первую комнату!</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="list-group">
+                            @foreach (var room in ActiveRooms)
+                            {
+                                <div class="list-group-item list-group-item-action room-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">Комната #@room.Id</h6>
+                                        <small>@room.PlayerCount/2 игроков</small>
+                                    </div>
+                                    <p class="mb-1 small">Создал: @room.Creator</p>
+                                    <button class="btn btn-sm btn-outline-light mt-2"
+                                            @onclick="() => JoinRoom(room.Id)">
+                                        Присоединиться
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    <div class="mt-3">
+                        <button class="btn btn-outline-light w-100" @onclick="RefreshRooms">
+                            🔄 Обновить список
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Футер с инструкциями -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card bg-dark text-light">
+                <div class="card-body">
+                    <h6>🎲 Правила игры:</h6>
+                    <ul class="small mb-0">
+                        <li>Цель - набрать 21 очко или больше дилера</li>
+                        <li>Туз = 1 или 11 очков</li>
+                        <li>Картинки (J, Q, K) = 10 очков</li>
+                        <li>Дилера играет компьютер</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string PlayerName { get; set; } = "Никитосик";
+    private string RoomId { get; set; }
+    private List<RoomInfo> ActiveRooms { get; set; } = new();
+
+    // Этот класс нужно будет обсудить с Пашей (SignalR Master)
+    private class RoomInfo
+    {
+        public string Id { get; set; }
+        public string Creator { get; set; }
+        public int PlayerCount { get; set; }
+    }
+
+    private bool CanJoin => !string.IsNullOrWhiteSpace(PlayerName) && PlayerName.Length <= 15;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Здесь позже Хару добавит подключение к SignalR
+        await RefreshRooms();
+    }
+
+    private async Task CreateNewGame()
+    {
+        if (!CanJoin) return;
+
+        // Сохраняем имя игрока
+        // Позже Хару добавит вызов метода хаба через SignalR
+        Console.WriteLine($"Создаем игру для {PlayerName}");
+
+        // Переходим на страницу игры
+        Navigation.NavigateTo($"/game/new?player={Uri.EscapeDataString(PlayerName)}");
+    }
+
+    private async Task JoinExistingGame()
+    {
+        if (!CanJoin || string.IsNullOrWhiteSpace(RoomId)) return;
+
+        Console.WriteLine($"Присоединяемся {PlayerName} к комнате {RoomId}");
+        Navigation.NavigateTo($"/game/{RoomId}?player={Uri.EscapeDataString(PlayerName)}");
+    }
+
+    private async Task JoinRoom(string roomId)
+    {
+        RoomId = roomId;
+        await JoinExistingGame();
+    }
+
+    private async Task RefreshRooms()
+    {
+        // Заглушка - позже Паша и Хару добавят реальное получение комнат
+        ActiveRooms = new List<RoomInfo>
+        {
+            new() { Id = "ABC123", Creator = "Елисей", PlayerCount = 1 },
+            new() { Id = "DEF456", Creator = "Саня", PlayerCount = 2 }
+        };
+
+        await Task.Delay(100); // Для асинхронности
+        StateHasChanged();
+    }
+
+    private void HandleEnterKey(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Key == "Enter")
+        {
+            CreateNewGame();
+        }
+    }
+
+    [Inject] private NavigationManager Navigation { get; set; }
+}

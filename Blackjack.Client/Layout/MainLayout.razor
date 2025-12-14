@@ -1,13 +1,19 @@
-﻿@inherits LayoutComponentBase
+﻿
+@inherits LayoutComponentBase
+@implements IDisposable
 
 <div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+    @* <div class="sidebar"> *@
+    @*     <NavMenu /> *@
+    @* </div> *@
 
     <main>
         <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+            @if (!IsLobby)
+            {
+                <a href="" @onclick="ReturnToLobby" class="btn btn-outline-light">← Вернуться в лобби</a>
+            }
+            <span class="text-light ms-3">Blackjack Dream Team</span>
         </div>
 
         <article class="content px-4">
@@ -16,8 +22,20 @@
     </main>
 </div>
 
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
-</div>
+@code {
+    [Inject] private NavigationManager Navigation { get; set; }
+
+    private bool IsLobby => Navigation.Uri.EndsWith("/") ||
+                           Navigation.Uri.Contains("/lobby") ||
+                           !Navigation.Uri.Contains("/game");
+
+    private void ReturnToLobby()
+    {
+        Navigation.NavigateTo("/");
+    }
+
+    public void Dispose()
+    {
+        // Cleanup if needed
+    }
+}

@@ -1,0 +1,146 @@
+﻿.game-container {
+    background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%) !important;
+    min-height: 100%;
+    padding: 2rem;
+    margin: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.room-header {
+    background: rgba(0, 0, 0, 0.3) !important;
+    padding: 1rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 215, 0, 0.3) !important;
+    margin-bottom: 2rem;
+    flex-shrink: 0;
+    color: white !important;
+}
+
+.game-board-container {
+    background: rgba(0, 50, 0, 0.2) !important;
+    border-radius: 15px;
+    padding: 2rem;
+    border: 2px solid rgba(255, 215, 0, 0.2) !important;
+    min-height: 400px;
+    margin-bottom: 100px;
+    flex: 1;
+}
+
+.control-panel {
+    position: fixed;
+    bottom: 0;
+    left: 250px;
+    right: 0;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.95) !important;
+    border-top: 3px solid #ffd700;
+    z-index: 1000;
+}
+
+    .control-panel .card {
+        background: rgba(0, 0, 0, 0.5) !important;
+        border: 1px solid rgba(255, 215, 0, 0.3) !important;
+    }
+
+/* Игровые кнопки */
+.btn-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+    border: none !important;
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%) !important;
+    border: none !important;
+    color: #000 !important;
+}
+
+    .btn-warning:hover {
+        color: #000 !important;
+    }
+
+/* Бейджи */
+.badge.bg-info {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%) !important;
+}
+
+.badge.bg-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+}
+
+.badge.bg-secondary {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+}
+
+/* Оверлей результата игры */
+.game-result-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.92) !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.game-result-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    padding: 3rem;
+    border-radius: 20px;
+    text-align: center;
+    color: white !important;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .control-panel {
+        left: 0;
+    }
+
+    .game-board-container {
+        margin-bottom: 150px;
+    }
+
+    .btn-lg {
+        font-size: 0.9rem;
+        padding: 0.5rem;
+    }
+
+    .game-container {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 640.98px) {
+    .control-panel {
+        left: 0;
+        padding: 0.5rem;
+    }
+
+    .btn-lg {
+        font-size: 0.8rem;
+        padding: 0.4rem;
+    }
+}

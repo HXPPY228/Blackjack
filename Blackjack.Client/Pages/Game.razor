@@ -1,0 +1,196 @@
+﻿@page "/game/{RoomId}"
+@page "/game/new"
+
+<div class="game-container">
+    <!-- Заголовок комнаты -->
+    <div class="room-header mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="text-light mb-0">Комната: <span class="text-warning">@RoomId</span></h4>
+                <small class="text-light">Игрок: <strong>@PlayerName</strong></small>
+            </div>
+            <div class="player-status">
+                <span class="badge bg-info">👥 @PlayerCount игроков</span>
+                @if (IsYourTurn)
+                {
+                    <span class="badge bg-success ms-2">🎮 Ваш ход!</span>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Основное игровое поле (Саня вставит сюда свой компонент) -->
+    <div class="game-board-container mb-4">
+        <!-- Здесь будет компонент Сани GameBoard.razor -->
+        <GameBoard Cards="PlayerCards" 
+                   DealerCards="DealerCards" 
+                   GameStatus="CurrentStatus" />
+    </div>
+
+    <!-- Панель управления -->
+    <div class="control-panel">
+        <div class="card bg-dark">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <div class="d-flex flex-wrap gap-2">
+                            <button class="btn btn-lg btn-success" 
+                                    @onclick="Hit"
+                                    disabled="@(!IsYourTurn || IsGameOver)">
+                                🃏 Взять карту (Hit)
+                            </button>
+                            <button class="btn btn-lg btn-warning" 
+                                    @onclick="Stand"
+                                    disabled="@(!IsYourTurn || IsGameOver)">
+                                ✋ Хватит (Stand)
+                            </button>
+                            <button class="btn btn-lg btn-outline-light" 
+                                    @onclick="DoubleDown"
+                                    disabled="@(!IsYourTurn || IsGameOver)">
+                                ⏩ Удвоить (Double)
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="game-info">
+                            <div class="text-light">
+                                Счет: <span class="text-warning">@PlayerScore</span>
+                            </div>
+                            <div class="text-light small">
+                                Статус: <span class="badge bg-secondary">@CurrentStatus</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Статус игры -->
+    @if (ShowGameResult)
+    {
+        <div class="game-result-overlay">
+            <div class="game-result-card">
+                <h3 class="text-center mb-4">
+                    @GetResultEmoji() @GameResultText
+                </h3>
+                <div class="text-center">
+                    <button class="btn btn-lg btn-primary me-2" @onclick="PlayAgain">
+                        Играть снова
+                    </button>
+                    <button class="btn btn-lg btn-outline-light" @onclick="ReturnToLobby">
+                        В лобби
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public string RoomId { get; set; } = "new";
+    [Inject] private NavigationManager Navigation { get; set; }
+    
+    // Эти данные будут приходить от Хару через SignalR
+    private string PlayerName { get; set; } = "Игрок";
+    private int PlayerCount { get; set; } = 1;
+    private bool IsYourTurn { get; set; } = true;
+    private bool IsGameOver { get; set; } = false;
+    private int PlayerScore { get; set; } = 0;
+    private string CurrentStatus { get; set; } = "Ожидание игроков...";
+    private string GameResultText { get; set; }
+    private bool ShowGameResult { get; set; }
+    
+    // Примерные данные - позже будут заменены реальными
+    private List<Card> PlayerCards { get; set; } = new();
+    private List<Card> DealerCards { get; set; } = new();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        // Получаем имя игрока из query параметра
+        var uri = new Uri(Navigation.Uri);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        PlayerName = query["player"] ?? "Игрок";
+        
+        if (RoomId == "new")
+        {
+            // Создаем новую комнату
+            RoomId = GenerateRoomId();
+        }
+        
+        // Позже Хару добавит подключение к комнате через SignalR
+        await LoadGameState();
+    }
+    
+    private string GenerateRoomId()
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        var random = new Random();
+        return new string(Enumerable.Repeat(chars, 6)
+            .Select(s => s[random.Next(s.Length)]).ToArray());
+    }
+    
+    private async Task LoadGameState()
+    {
+        // Заглушка - позже Хару заменит на реальную загрузку состояния
+        PlayerCards = new List<Card>
+        {
+            new() { Suit = Suit.Hearts, Rank = Rank.Ace },
+            new() { Suit = Suit.Clubs, Rank = Rank.King }
+        };
+        
+        DealerCards = new List<Card>
+        {
+            new() { Suit = Suit.Spades, Rank = Rank.Queen, IsHidden = true },
+            new() { Suit = Suit.Diamonds, Rank = Rank.Seven }
+        };
+        
+        PlayerScore = 21;
+        await Task.Delay(100);
+    }
+    
+    private async Task Hit()
+    {
+        Console.WriteLine("Игрок берет карту");
+        // Позже Хару добавит вызов метода хаба
+        IsYourTurn = false;
+        StateHasChanged();
+    }
+    
+    private async Task Stand()
+    {
+        Console.WriteLine("Игрок остановился");
+        // Позже Хару добавит вызов метода хаба
+        IsYourTurn = false;
+        StateHasChanged();
+    }
+    
+    private async Task DoubleDown()
+    {
+        Console.WriteLine("Игрок удваивает ставку");
+        // Позже Хару добавит вызов метода хаба
+        IsYourTurn = false;
+        StateHasChanged();
+    }
+    
+    private async Task PlayAgain()
+    {
+        ShowGameResult = false;
+        IsGameOver = false;
+        IsYourTurn = true;
+        await LoadGameState();
+    }
+    
+    private void ReturnToLobby()
+    {
+        Navigation.NavigateTo("/");
+    }
+    
+    private string GetResultEmoji()
+    {
+        if (GameResultText?.Contains("Выигрыш") == true) return "🎉";
+        if (GameResultText?.Contains("Проигрыш") == true) return "😢";
+        if (GameResultText?.Contains("Ничья") == true) return "🤝";
+        return "🎲";
+    }
+}
