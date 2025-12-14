@@ -1,0 +1,58 @@
+﻿@using Blackjack.Shared
+
+<div class="card @GetCardClass()" title="@Card.Rank of @Card.Suit">
+    @if (Card.IsHidden)
+    {
+        <div class="card-back">🂠</div>
+    }
+    else
+    {
+        <div class="card-front">
+            <div class="card-rank">@GetRankSymbol()</div>
+            <div class="card-suit">@GetSuitSymbol()</div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public Card Card { get; set; }
+
+    private string GetCardClass()
+    {
+        if (Card.IsHidden) return "card-hidden";
+
+        return Card.Suit switch
+        {
+            Suit.Hearts => "card-hearts",
+            Suit.Diamonds => "card-diamonds",
+            Suit.Clubs => "card-clubs",
+            Suit.Spades => "card-spades",
+            _ => ""
+        };
+    }
+
+    private string GetRankSymbol()
+    {
+        return Card.Rank switch
+        {
+            Rank.Ace => "A",
+            Rank.King => "K",
+            Rank.Queen => "Q",
+            Rank.Jack => "J",
+            _ => ((int)Card.Rank).ToString()
+        };
+    }
+
+    private string GetSuitSymbol()
+    {
+        return Card.Suit switch
+        {
+            Suit.Hearts => "♥",
+            Suit.Diamonds => "♦",
+            Suit.Clubs => "♣",
+            Suit.Spades => "♠",
+            _ => ""
+        };
+    }
+}

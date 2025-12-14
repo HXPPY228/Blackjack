@@ -1,11 +1,15 @@
 using Blackjack.Client.Pages;
 using Blackjack.Components;
+using Blackjack.Client.Services;
+using Blackjack.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
+
+builder.Services.AddScoped<IGameHubService, MockGameHubService>();
 
 var app = builder.Build();
 
